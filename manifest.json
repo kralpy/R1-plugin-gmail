@@ -1,0 +1,11 @@
+{
+  "name": "R1 Test Plugin",
+  "version": "1.0",
+  "author": "Gürkan",
+  "description": "Test plugin voor R1 Creations SDK features",
+  "main": "index.html",
+  "screen": {
+    "width": 240,
+    "height": 282
+  }
+}

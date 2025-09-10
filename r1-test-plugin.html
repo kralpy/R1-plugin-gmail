@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>R1 Gmail Plugin</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 240px;
+    height: 282px;
+    overflow: hidden;
+  }
+</style>
+</head>
+<body>
+
+<script>
+// Open Gmail direct in WebView
+window.location.href = "https://mail.google.com/mail/u/0/?ui=2&view=cm&fs=1&tf=1";
+
+// Scroll wheel mapping
+window.addEventListener("scrollUp", () => {
+  window.scrollBy(0, -50);
+});
+window.addEventListener("scrollDown", () => {
+  window.scrollBy(0, 50);
+});
+
+// Side button acts as click
+window.addEventListener("sideClick", () => {
+  const active = document.activeElement;
+  if (active) active.click();
+});
+
+// Tilt scrolling with accelerometer
+if (window.creationSensors && window.creationSensors.accelerometer) {
+  window.creationSensors.accelerometer.start((data) => {
+    if (data.y > 0.1) window.scrollBy(0, 5);
+    if (data.y < -0.1) window.scrollBy(0, -5);
+  }, { frequency: 60 });
+}
+</script>
+
+</body>
+</html>
