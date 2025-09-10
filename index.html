@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>R1 Gmail Plugin</title>
+<meta name="viewport" content="width=240, height=282, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <style>
   html, body {
     margin: 0;
@@ -10,37 +11,68 @@
     width: 240px;
     height: 282px;
     overflow: hidden;
+    background: #000;
+    font-family: sans-serif;
+  }
+  #app {
+    width: 240px;
+    height: 282px;
+    overflow: hidden;
+    position: relative;
+    font-size: 12px;
+  }
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    transform: scale(0.95);
+    transform-origin: top left;
+  }
+  button {
+    min-width: 40px;
+    min-height: 40px;
+    font-size: 10px;
   }
 </style>
 </head>
 <body>
+<div id="app">
+  <iframe id="gmailFrame" src="https://mail.google.com/mail/u/0/?ui=2&view=cm&fs=1&tf=1"></iframe>
+</div>
 
 <script>
-// Open Gmail direct in WebView
-window.location.href = "https://mail.google.com/mail/u/0/?ui=2&view=cm&fs=1&tf=1";
-
 // Scroll wheel mapping
 window.addEventListener("scrollUp", () => {
-  window.scrollBy(0, -50);
+  const iframe = document.getElementById('gmailFrame');
+  iframe.contentWindow.scrollBy(0, -50);
 });
 window.addEventListener("scrollDown", () => {
-  window.scrollBy(0, 50);
+  const iframe = document.getElementById('gmailFrame');
+  iframe.contentWindow.scrollBy(0, 50);
 });
 
 // Side button acts as click
 window.addEventListener("sideClick", () => {
-  const active = document.activeElement;
+  const iframe = document.getElementById('gmailFrame');
+  const active = iframe.contentWindow.document.activeElement;
   if (active) active.click();
 });
 
 // Tilt scrolling with accelerometer
 if (window.creationSensors && window.creationSensors.accelerometer) {
   window.creationSensors.accelerometer.start((data) => {
-    if (data.y > 0.1) window.scrollBy(0, 5);
-    if (data.y < -0.1) window.scrollBy(0, -5);
+    const iframe = document.getElementById('gmailFrame');
+    if (data.y > 0.1) iframe.contentWindow.scrollBy(0, 5);
+    if (data.y < -0.1) iframe.contentWindow.scrollBy(0, -5);
   }, { frequency: 60 });
 }
-</script>
 
+// Browser test keys (voor PC testing)
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowUp') window.dispatchEvent(new Event('scrollUp'));
+  if (e.key === 'ArrowDown') window.dispatchEvent(new Event('scrollDown'));
+  if (e.key === 'Enter') window.dispatchEvent(new Event('sideClick'));
+});
+</script>
 </body>
 </html>
