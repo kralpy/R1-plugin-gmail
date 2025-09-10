@@ -19,55 +19,33 @@
     height: 282px;
     overflow: hidden;
     position: relative;
+    text-align: center;
+    color: #fff;
   }
-  iframe {
-    width: 240px;
-    height: 282px;
-    border: none;
-    transform: scale(1);
-    transform-origin: top left;
+  #loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  button {
+    min-width: 40px;
+    min-height: 40px;
+    font-size: 10px;
+    margin: 2px;
   }
 </style>
 </head>
 <body>
 <div id="app">
-  <!-- Gmail Inbox -->
-  <iframe id="gmailFrame" src="https://mail.google.com/mail/u/0/#inbox"></iframe>
+  <div id="loading">
+    <p>Opening Gmail...</p>
+  </div>
 </div>
 
 <script>
-// Scroll wheel mapping
-window.addEventListener("scrollUp", () => {
-  const iframe = document.getElementById('gmailFrame');
-  iframe.contentWindow.scrollBy(0, -50);
-});
-window.addEventListener("scrollDown", () => {
-  const iframe = document.getElementById('gmailFrame');
-  iframe.contentWindow.scrollBy(0, 50);
-});
-
-// Side button acts as click
-window.addEventListener("sideClick", () => {
-  const iframe = document.getElementById('gmailFrame');
-  const active = iframe.contentWindow.document.activeElement;
-  if (active) active.click();
-});
-
-// Tilt scrolling with accelerometer
-if (window.creationSensors && window.creationSensors.accelerometer) {
-  window.creationSensors.accelerometer.start((data) => {
-    const iframe = document.getElementById('gmailFrame');
-    if (data.y > 0.1) iframe.contentWindow.scrollBy(0, 5);
-    if (data.y < -0.1) iframe.contentWindow.scrollBy(0, -5);
-  }, { frequency: 60 });
-}
-
-// Browser test keys for PC
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowUp') window.dispatchEvent(new Event('scrollUp'));
-  if (e.key === 'ArrowDown') window.dispatchEvent(new Event('scrollDown'));
-  if (e.key === 'Enter') window.dispatchEvent(new Event('sideClick'));
-});
+  // Functie: Open Gmail inbox direct in R1 WebView
+  window.location.href = "https://mail.google.com/mail/u/0/";
 </script>
 </body>
 </html>
