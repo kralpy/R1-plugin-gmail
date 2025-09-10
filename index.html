@@ -13,66 +13,62 @@
     overflow: hidden;
     background: #000;
     font-family: sans-serif;
+    color: #fff;
   }
   #app {
     width: 240px;
     height: 282px;
-    overflow: hidden;
-    position: relative;
-    font-size: 12px;
-  }
-  iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    transform: scale(0.95);
-    transform-origin: top left;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
   }
   button {
-    min-width: 40px;
+    min-width: 120px;
     min-height: 40px;
-    font-size: 10px;
+    font-size: 12px;
+    margin-top: 20px;
+    cursor: pointer;
   }
 </style>
 </head>
 <body>
 <div id="app">
-  <iframe id="gmailFrame" src="https://mail.google.com/mail/u/0/?ui=2&view=cm&fs=1&tf=1"></iframe>
+  <h3>R1 Gmail Plugin</h3>
+  <p>Press the button to open Gmail inbox</p>
+  <button id="openGmailBtn">Open Gmail</button>
 </div>
 
 <script>
-// Scroll wheel mapping
-window.addEventListener("scrollUp", () => {
-  const iframe = document.getElementById('gmailFrame');
-  iframe.contentWindow.scrollBy(0, -50);
-});
-window.addEventListener("scrollDown", () => {
-  const iframe = document.getElementById('gmailFrame');
-  iframe.contentWindow.scrollBy(0, 50);
-});
+  // Open Gmail inbox veilig in R1 WebView
+  document.getElementById('openGmailBtn').addEventListener('click', () => {
+    window.location.href = "https://mail.google.com/mail/u/0/";
+  });
 
-// Side button acts as click
-window.addEventListener("sideClick", () => {
-  const iframe = document.getElementById('gmailFrame');
-  const active = iframe.contentWindow.document.activeElement;
-  if (active) active.click();
-});
+  // Scroll wheel mapping (voor R1)
+  window.addEventListener("scrollUp", () => console.log("Scroll Up detected"));
+  window.addEventListener("scrollDown", () => console.log("Scroll Down detected"));
 
-// Tilt scrolling with accelerometer
-if (window.creationSensors && window.creationSensors.accelerometer) {
-  window.creationSensors.accelerometer.start((data) => {
-    const iframe = document.getElementById('gmailFrame');
-    if (data.y > 0.1) iframe.contentWindow.scrollBy(0, 5);
-    if (data.y < -0.1) iframe.contentWindow.scrollBy(0, -5);
-  }, { frequency: 60 });
-}
+  // Side button (PTT) mapping
+  window.addEventListener("sideClick", () => console.log("Side button clicked"));
 
-// Browser test keys (voor PC testing)
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowUp') window.dispatchEvent(new Event('scrollUp'));
-  if (e.key === 'ArrowDown') window.dispatchEvent(new Event('scrollDown'));
-  if (e.key === 'Enter') window.dispatchEvent(new Event('sideClick'));
-});
+  // Accelerometer (optioneel)
+  if (window.creationSensors && window.creationSensors.accelerometer) {
+    window.creationSensors.accelerometer.start((data) => {
+      console.log('Accelerometer:', data);
+      // Voorbeeld: scrollen op basis van tilt
+      if (data.y > 0.1) window.scrollBy(0, 5);
+      if (data.y < -0.1) window.scrollBy(0, -5);
+    }, { frequency: 60 });
+  }
+
+  // PC testing (optioneel)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowUp') window.dispatchEvent(new Event('scrollUp'));
+    if (e.key === 'ArrowDown') window.dispatchEvent(new Event('scrollDown'));
+    if (e.key === 'Enter') window.dispatchEvent(new Event('sideClick'));
+  });
 </script>
 </body>
 </html>
