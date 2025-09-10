@@ -13,48 +13,66 @@
     overflow: hidden;
     background: #000;
     font-family: sans-serif;
-    color: #fff;
   }
   #app {
     width: 240px;
     height: 282px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    font-size: 12px;
+  }
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    transform: scale(0.95);
+    transform-origin: top left;
   }
   button {
-    min-width: 100px;
+    min-width: 40px;
     min-height: 40px;
-    font-size: 12px;
-    margin-top: 20px;
+    font-size: 10px;
   }
 </style>
 </head>
 <body>
 <div id="app">
-  <h3>R1 Gmail Plugin</h3>
-  <p>Press button to open Gmail inbox</p>
-  <button id="openGmailBtn">Open Gmail</button>
+  <iframe id="gmailFrame" src="https://mail.google.com/mail/u/0/?ui=2&view=cm&fs=1&tf=1"></iframe>
 </div>
 
 <script>
-  document.getElementById('openGmailBtn').addEventListener('click', () => {
-    // Open Gmail inbox safely in R1 WebView
-    window.location.href = "https://mail.google.com/mail/u/0/";
-  });
+// Scroll wheel mapping
+window.addEventListener("scrollUp", () => {
+  const iframe = document.getElementById('gmailFrame');
+  iframe.contentWindow.scrollBy(0, -50);
+});
+window.addEventListener("scrollDown", () => {
+  const iframe = document.getElementById('gmailFrame');
+  iframe.contentWindow.scrollBy(0, 50);
+});
 
-  // R1 hardware test (scroll wheel / side button)
-  window.addEventListener("scrollUp", () => console.log("Scroll Up detected"));
-  window.addEventListener("scrollDown", () => console.log("Scroll Down detected"));
-  window.addEventListener("sideClick", () => console.log("Side button clicked"));
+// Side button acts as click
+window.addEventListener("sideClick", () => {
+  const iframe = document.getElementById('gmailFrame');
+  const active = iframe.contentWindow.document.activeElement;
+  if (active) active.click();
+});
 
-  // Accelerometer (optioneel)
-  if (window.creationSensors && window.creationSensors.accelerometer) {
-    window.creationSensors.accelerometer.start((data) => {
-      console.log('Accelerometer:', data);
-    }, { frequency: 60 });
-  }
+// Tilt scrolling with accelerometer
+if (window.creationSensors && window.creationSensors.accelerometer) {
+  window.creationSensors.accelerometer.start((data) => {
+    const iframe = document.getElementById('gmailFrame');
+    if (data.y > 0.1) iframe.contentWindow.scrollBy(0, 5);
+    if (data.y < -0.1) iframe.contentWindow.scrollBy(0, -5);
+  }, { frequency: 60 });
+}
+
+// Browser test keys (voor PC testing)
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowUp') window.dispatchEvent(new Event('scrollUp'));
+  if (e.key === 'ArrowDown') window.dispatchEvent(new Event('scrollDown'));
+  if (e.key === 'Enter') window.dispatchEvent(new Event('sideClick'));
+});
 </script>
 </body>
 </html>
