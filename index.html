@@ -13,39 +13,48 @@
     overflow: hidden;
     background: #000;
     font-family: sans-serif;
+    color: #fff;
   }
   #app {
     width: 240px;
     height: 282px;
-    overflow: hidden;
-    position: relative;
-    text-align: center;
-    color: #fff;
-  }
-  #loading {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
   }
   button {
-    min-width: 40px;
+    min-width: 100px;
     min-height: 40px;
-    font-size: 10px;
-    margin: 2px;
+    font-size: 12px;
+    margin-top: 20px;
   }
 </style>
 </head>
 <body>
 <div id="app">
-  <div id="loading">
-    <p>Opening Gmail...</p>
-  </div>
+  <h3>R1 Gmail Plugin</h3>
+  <p>Press button to open Gmail inbox</p>
+  <button id="openGmailBtn">Open Gmail</button>
 </div>
 
 <script>
-  // Functie: Open Gmail inbox direct in R1 WebView
-  window.location.href = "https://mail.google.com/mail/u/0/";
+  document.getElementById('openGmailBtn').addEventListener('click', () => {
+    // Open Gmail inbox safely in R1 WebView
+    window.location.href = "https://mail.google.com/mail/u/0/";
+  });
+
+  // R1 hardware test (scroll wheel / side button)
+  window.addEventListener("scrollUp", () => console.log("Scroll Up detected"));
+  window.addEventListener("scrollDown", () => console.log("Scroll Down detected"));
+  window.addEventListener("sideClick", () => console.log("Side button clicked"));
+
+  // Accelerometer (optioneel)
+  if (window.creationSensors && window.creationSensors.accelerometer) {
+    window.creationSensors.accelerometer.start((data) => {
+      console.log('Accelerometer:', data);
+    }, { frequency: 60 });
+  }
 </script>
 </body>
 </html>
